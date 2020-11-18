@@ -1,0 +1,83 @@
+SELECT v_id FROM cart
+WHERE v_id > ANY (SELECT v_id FROM cart WHERE v_id > 95);
+
+SELECT v_id FROM cart
+WHERE v_id BETWEEN 90 AND 99;
+
+SELECT c_id FROM cust
+WHERE EXISTS (SELECT c_id FROM cust WHERE c_id> 3);
+
+SELECT c_id FROM cust
+WHERE c_id IN (3,5);
+
+SELECT v_name FROM cart
+WHERE v_name LIKE 'p%';
+
+SELECT v_name FROM cart
+WHERE v_name NOT LIKE 'r%';
+
+SELECT v_price,v_name FROM cart
+WHERE v_name = "carrot" OR v_price = 29;
+
+SELECT v_price FROM cart
+WHERE v_price > SOME (SELECT v_price FROM cart WHERE v_price > 25);
+
+SELECT v_id, v_price, 
+ (v_id+v_price)
+FROM cart
+WHERE (v_id+v_price)>100;
+
+SELECT v_id, v_price, 
+ (v_id-v_price)
+FROM cart
+WHERE (v_id-v_price)>50;
+
+SELECT v_price , (v_price*0.22) 
+FROM cart 
+WHERE(v_price)>50;
+
+SELECT v_price ,(v_price/100)
+FROM cart
+WHERE v_price>10;
+
+
+SELECT v_price ,(v_price%100)
+FROM cart
+WHERE v_price>10;
+
+
+SELECT v_name
+FROM cart
+WHERE v_price = ALL (SELECT v_price FROM cart WHERE v_price>50);
+
+CREATE TABLE buy (
+    ID int NOT NULL,
+    LastName varchar(255) NOT NULL,
+    FirstName varchar(255),
+    Age int,
+    UNIQUE (ID)
+);
+
+INSERT INTO buy 
+VALUES (123,'achari','shree',29);
+
+INSERT INTO buy 
+VALUES (123,'b','a',23);
+
+SELECT 
+    count(v_name)
+FROM
+    cart;
+
+
+SELECT 
+    AVG(v_price)
+FROM
+    cart;
+
+SELECT 
+    SUM(v_price)
+FROM
+    cart
+GROUP BY v_id;
+

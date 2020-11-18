@@ -1,0 +1,73 @@
+mysql: [Warning] C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe: ignoring
+ option '--no-beep' due to invalid value ''
+Enter password: *****
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 8
+Server version: 8.0.11 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2018, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| abc                |
+| dss                |
+| information_schema |
+| it_dept            |
+| my_db              |
+| mysql              |
+| performance_schema |
+| quiz               |
+| sdf                |
+| sys                |
++--------------------+
+10 rows in set (0.22 sec)
+
+mysql> use dss;
+Database changed
+mysql> select *from login;
++---------+----------+
+| user_id | password |
++---------+----------+
+|       1 | abc      |
+|       2 | def      |
+|       3 | ijk      |
+|       4 | lmn      |
+|       5 | opq      |
++---------+----------+
+5 rows in set (0.07 sec)
+
+mysql> select *from cust;
++------+--------+------------+------------+
+| c_id | c_name | c_address  | c_password |
++------+--------+------------+------------+
+|    1 | ram    | nashik     | abc        |
+|    2 | rama   | pune       | def        |
+|    3 | sham   | mumbai     | ijk        |
+|    4 | geeta  | aurangabad | lmn        |
+|    5 | heetal | jalgaon    | opq        |
++------+--------+------------+------------+
+5 rows in set (0.02 sec)
+
+mysql> select *from cart;
++------------+------+---------+------+
+| v_name     | v_id | v_price | c_id |
++------------+------+---------+------+
+| potato     |  100 | 40      | NULL |
+| fenugreek  |   99 | 30      | NULL |
+| corriander |   98 | 45      | NULL |
+| pumpkin    |   97 | 50      | NULL |
+| raddish    |   98 | 25      | NULL |
+| raddish    |   96 | 25      | NULL |
+| carrot     |   95 | 29      | NULL |
++------------+------+---------+------+
+7 rows in set (0.03 sec)
+
+mysql>

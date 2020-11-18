@@ -1,0 +1,302 @@
+mysql: [Warning] C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe: ignoring
+ option '--no-beep' due to invalid value ''
+Enter password: *****
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 8
+Server version: 8.0.11 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2018, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| dss                |
+| information_schema |
+| it_dept            |
+| my_db              |
+| mysql              |
+| performance_schema |
+| quiz               |
+| sdf                |
+| sys                |
++--------------------+
+9 rows in set (0.11 sec)
+
+mysql> use dss;
+Database changed
+mysql> select *from cust;
++------+--------+------------+------------+
+| c_id | c_name | c_address  | c_password |
++------+--------+------------+------------+
+|    1 | ram    | nashik     | abc        |
+|    2 | rama   | pune       | def        |
+|    3 | sham   | mumbai     | ijk        |
+|    4 | geeta  | aurangabad | lmn        |
+|    5 | heetal | jalgaon    | opq        |
++------+--------+------------+------------+
+5 rows in set (0.07 sec)
+
+mysql> select *from cart;
++------------+------+---------+------+
+| v_name     | v_id | v_price | c_id |
++------------+------+---------+------+
+| potato     |  100 | 40      | NULL |
+| fenugreek  |   99 | 30      | NULL |
+| corriander |   98 | 45      | NULL |
+| pumpkin    |   97 | 50      | NULL |
+| raddish    |   98 | 25      | NULL |
+| raddish    |   96 | 25      | NULL |
+| carrot     |   95 | 29      | NULL |
++------------+------+---------+------+
+7 rows in set (0.02 sec)
+
+mysql> select *from login;
++---------+----------+
+| user_id | password |
++---------+----------+
+|       1 | abc      |
+|       2 | def      |
+|       3 | ijk      |
+|       4 | lmn      |
+|       5 | opq      |
++---------+----------+
+5 rows in set (0.03 sec)
+
+mysql> select c_id,v_id from cust,cart
+    ->
+    -> ;
+ERROR 1052 (23000): Column 'c_id' in field list is ambiguous
+mysql> select c_id,v_id from cust,cart
+    -> where c_id>3 and v_id in(select v_id from cart where v_id>50);
+ERROR 1052 (23000): Column 'c_id' in field list is ambiguous
+mysql> select c_name,v_id from cust,cart
+    -> select c_id from cust
+    -> where c_id>2;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that
+corresponds to your MySQL server version for the right syntax to use near 'selec
+t c_id from cust
+where c_id>2' at line 2
+mysql> select user_id from login
+    -> where user_id>5;
+Empty set (0.05 sec)
+
+mysql> select user_id from login
+    -> where user_id=5 and password(select password from login where password='o
+pq');
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that
+corresponds to your MySQL server version for the right syntax to use near '(sele
+ct password from login where password='opq')' at line 2
+mysql> select user_id from login
+    -> where user_id=5 and password in (select password from login where passwor
+d='opq');
++---------+
+| user_id |
++---------+
+|       5 |
++---------+
+1 row in set (0.04 sec)
+
+mysql> select user_id from login
+    -> where user_id<5 and password(select password from login where password NO
+T LIKE 'i%');
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that
+corresponds to your MySQL server version for the right syntax to use near '(sele
+ct password from login where password NOT LIKE 'i%')' at line 2
+mysql> select v_name from cart where v_name not like '%r';
++-----------+
+| v_name    |
++-----------+
+| potato    |
+| fenugreek |
+| pumpkin   |
+| raddish   |
+| raddish   |
+| carrot    |
++-----------+
+6 rows in set (0.05 sec)
+
+mysql> select v_name from cart where v_name not like '%p';
++------------+
+| v_name     |
++------------+
+| potato     |
+| fenugreek  |
+| corriander |
+| pumpkin    |
+| raddish    |
+| raddish    |
+| carrot     |
++------------+
+7 rows in set (0.00 sec)
+
+mysql> select v_name from cart where v_name like '%p';
+Empty set (0.00 sec)
+
+mysql> SELECT v_price FROM cart
+    -> WHERE v_price > SOME (SELECT v_price FROM cart WHERE v_price > 25);
++---------+
+| v_price |
++---------+
+| 40      |
+| 30      |
+| 45      |
+| 50      |
++---------+
+4 rows in set (0.03 sec)
+
+mysql> SELECT v_price FROM cart
+    -> where v_price>ALL(SELECT v_price FROM cart WHERE v_price>25);
+Empty set (0.00 sec)
+
+mysql> SELECT v_price FROM cart
+    -> where v_price=60 >ALL(SELECT v_price FROM cart WHERE v_price>25);
+Empty set (0.00 sec)
+
+mysql> SELECT v_price FROM cart
+    -> ;
++---------+
+| v_price |
++---------+
+| 40      |
+| 30      |
+| 45      |
+| 50      |
+| 25      |
+| 25      |
+| 29      |
++---------+
+7 rows in set (0.00 sec)
+
+mysql> SELECT v_name
+    -> FROM cart
+    -> WHERE v_price = ALL (SELECT v_price FROM cart WHERE v_price>50);
++------------+
+| v_name     |
++------------+
+| potato     |
+| fenugreek  |
+| corriander |
+| pumpkin    |
+| raddish    |
+| raddish    |
+| carrot     |
++------------+
+7 rows in set (0.00 sec)
+
+mysql> SELECT v_id FROM cart
+    -> WHERE v_id > all (SELECT v_id FROM cart WHERE v_id > 95);
+Empty set (0.00 sec)
+
+mysql> CREATE TABLE buy (
+    ->     ID int NOT NULL,
+    ->     LastName varchar(255) NOT NULL,
+    ->     FirstName varchar(255),
+    ->     Age int,
+    ->     UNIQUE (ID)
+    -> );
+Query OK, 0 rows affected (0.66 sec)
+
+mysql> INSERT INTO buy
+    -> VALUES (123,achari,shree,29);
+ERROR 1054 (42S22): Unknown column 'achari' in 'field list'
+mysql> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that
+corresponds to your MySQL server version for the right syntax to use near ')' at
+ line 1
+mysql> INSERT INTO buy
+    -> VALUES (123,'achari','shree',29);
+Query OK, 1 row affected (0.13 sec)
+
+mysql> select*from buy;
++-----+----------+-----------+------+
+| ID  | LastName | FirstName | Age  |
++-----+----------+-----------+------+
+| 123 | achari   | shree     |   29 |
++-----+----------+-----------+------+
+1 row in set (0.00 sec)
+
+mysql>
+mysql> INSERT INTO buy
+    -> VALUES (123,'b','a',23);
+ERROR 1062 (23000): Duplicate entry '123' for key 'ID'
+mysql> SELECT
+    ->     count(v_name)
+    -> FROM
+    ->     cart;
++---------------+
+| count(v_name) |
++---------------+
+|             7 |
++---------------+
+1 row in set (0.02 sec)
+
+mysql>
+mysql> SELECT
+    ->     AVG(v_price)
+    -> FROM
+    ->     cart;
++--------------------+
+| AVG(v_price)       |
++--------------------+
+| 34.857142857142854 |
++--------------------+
+1 row in set (0.01 sec)
+
+mysql> SELECT
+    ->     SUM(v_price)
+    -> FROM
+    ->     cart
+    -> GROUP BY v_id;
++--------------+
+| SUM(v_price) |
++--------------+
+|           40 |
+|           30 |
+|           70 |
+|           50 |
+|           25 |
+|           29 |
++--------------+
+6 rows in set (0.02 sec)
+
+mysql> SELECT
+    ->     SUM(v_price)
+    -> FROM
+    ->     cart
+    -> ;
++--------------+
+| SUM(v_price) |
++--------------+
+|          244 |
++--------------+
+1 row in set (0.00 sec)
+
+mysql> select min(v_price)
+    -> from cart;
++--------------+
+| min(v_price) |
++--------------+
+| 25           |
++--------------+
+1 row in set (0.00 sec)
+
+mysql> select max(v_price)
+    -> from cart;
++--------------+
+| max(v_price) |
++--------------+
+| 50           |
++--------------+
+1 row in set (0.00 sec)
+
+
+
+
+insert into orders2 values('Geitost',2008-11-11 );

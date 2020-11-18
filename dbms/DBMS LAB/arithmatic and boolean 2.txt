@@ -1,0 +1,300 @@
+|       4 | lmn      |
+|       5 | opq      |
++---------+----------+
+5 rows in set (0.00 sec)
+
+mysql> select * from cust;
++------+--------+------------+------------+
+| c_id | c_name | c_address  | c_password |
++------+--------+------------+------------+
+|    1 | ram    | nashik     | abc        |
+|    2 | rama   | pune       | def        |
+|    3 | sham   | mumbai     | ijk        |
+|    4 | geeta  | aurangabad | lmn        |
+|    5 | heetal | jalgaon    | opq        |
++------+--------+------------+------------+
+5 rows in set (0.00 sec)
+
+mysql> select * from cart;
++------------+------+---------+------+
+| v_name     | v_id | v_price | c_id |
++------------+------+---------+------+
+| potato     |  100 | 40      | NULL |
+| fenugreek  |   99 | 30      | NULL |
+| corriander |   98 | 45      | NULL |
+| pumpkin    |   97 | 50      | NULL |
+| raddish    |   98 | 25      | NULL |
+| raddish    |   96 | 25      | NULL |
+| carrot     |   95 | 29      | NULL |
++------------+------+---------+------+
+7 rows in set (0.00 sec)
+
+mysql> desc login;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| user_id  | int(11)     | YES  | MUL | NULL    |       |
+| password | varchar(20) | YES  |     | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> desc cart;
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| v_name  | varchar(20) | YES  |     | NULL    |       |
+| v_id    | int(11)     | YES  |     | NULL    |       |
+| v_price | varchar(20) | YES  |     | NULL    |       |
+| c_id    | int(11)     | YES  | MUL | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> desc cust;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| c_id       | int(11)     | NO   | PRI | NULL    |       |
+| c_name     | varchar(20) | YES  |     | NULL    |       |
+| c_address  | varchar(20) | YES  |     | NULL    |       |
+| c_password | varchar(20) | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> select v_id,c_id from cart,cust
+    ->   where v_id=100 and c_id=5;
+ERROR 1052 (23000): Column 'c_id' in field list is ambiguous
+mysql> select v_id,c_id from cart,cust
+    ->   where cust.c_id=cart.v_id and v_id=100 and c_id=5;
+ERROR 1052 (23000): Column 'c_id' in field list is ambiguous
+mysql> select v_id from cart
+    ->  where v_id=100;
++------+
+| v_id |
++------+
+|  100 |
++------+
+1 row in set (0.00 sec)
+
+mysql> select v_id from cart
+    -> ;
++------+
+| v_id |
++------+
+|  100 |
+|   99 |
+|   98 |
+|   97 |
+|   98 |
+|   96 |
+|   95 |
++------+
+7 rows in set (0.00 sec)
+
+mysql> select v_id,v_name from
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that
+corresponds to your MySQL server version for the right syntax to use near '' at
+line 1
+mysql> select v_id,v_name from cart
+    -> where v_id=100 and v_id=potato;
+ERROR 1054 (42S22): Unknown column 'potato' in 'where clause'
+mysql> select v_id,v_name from cart
+    -> where v_id=100 and v_name='potato';
++------+--------+
+| v_id | v_name |
++------+--------+
+|  100 | potato |
++------+--------+
+1 row in set (0.00 sec)
+
+mysql> SELECT v_id FROM cart
+    -> WHERE v_id > ANY (SELECT v_id FROM cart WHERE v_id > 95);
++------+
+| v_id |
++------+
+|  100 |
+|   99 |
+|   98 |
+|   97 |
+|   98 |
++------+
+5 rows in set (0.09 sec)
+
+mysql>
+mysql> SELECT v_id FROM cart
+    -> WHERE v_id BETWEEN 90 AND 99;
++------+
+| v_id |
++------+
+|   99 |
+|   98 |
+|   97 |
+|   98 |
+|   96 |
+|   95 |
++------+
+6 rows in set (0.00 sec)
+
+mysql>
+mysql> SELECT c_id FROM cust
+    -> WHERE EXISTS (SELECT c_id FROM cust WHERE c_id> 3);
++------+
+| c_id |
++------+
+|    1 |
+|    2 |
+|    3 |
+|    4 |
+|    5 |
++------+
+5 rows in set (0.01 sec)
+
+mysql> SELECT c_id FROM cust
+    -> WHERE c_id IN (3,5);
++------+
+| c_id |
++------+
+|    3 |
+|    5 |
++------+
+2 rows in set (0.00 sec)
+
+mysql>
+mysql> SELECT v_name FROM cart
+    -> WHERE v_name LIKE 'p%';
++---------+
+| v_name  |
++---------+
+| potato  |
+| pumpkin |
++---------+
+2 rows in set (0.00 sec)
+
+mysql>
+mysql> SELECT v_name FROM cart
+    -> WHERE v_name NOT LIKE 'r%';
++------------+
+| v_name     |
++------------+
+| potato     |
+| fenugreek  |
+| corriander |
+| pumpkin    |
+| carrot     |
++------------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT v_price,v_name FROM cart
+    -> WHERE v_name = "carrot" OR v_price = 29;
++---------+--------+
+| v_price | v_name |
++---------+--------+
+| 29      | carrot |
++---------+--------+
+1 row in set (0.00 sec)
+
+mysql> SELECT v_price FROM cart
+    -> WHERE v_price > SOME (SELECT v_price FROM cart WHERE v_price > 25);
++---------+
+| v_price |
++---------+
+| 40      |
+| 30      |
+| 45      |
+| 50      |
++---------+
+4 rows in set (0.02 sec)
+
+mysql> SELECT v_id, v_price,
+    ->  (v_id+v_price)
+    -> FROM cart
+    -> WHERE (v_id+v_price)>100;
++------+---------+----------------+
+| v_id | v_price | (v_id+v_price) |
++------+---------+----------------+
+|  100 | 40      |            140 |
+|   99 | 30      |            129 |
+|   98 | 45      |            143 |
+|   97 | 50      |            147 |
+|   98 | 25      |            123 |
+|   96 | 25      |            121 |
+|   95 | 29      |            124 |
++------+---------+----------------+
+7 rows in set (0.11 sec)
+
+mysql> SELECT v_id, v_price,
+    ->  (v_id-v_price)
+    -> FROM cart
+    -> WHERE (v_id-v_price)>50;
++------+---------+----------------+
+| v_id | v_price | (v_id-v_price) |
++------+---------+----------------+
+|  100 | 40      |             60 |
+|   99 | 30      |             69 |
+|   98 | 45      |             53 |
+|   98 | 25      |             73 |
+|   96 | 25      |             71 |
+|   95 | 29      |             66 |
++------+---------+----------------+
+6 rows in set (0.02 sec)
+
+mysql> SELECT v_price , (v_price*0.22)
+    -> FROM cart
+    -> WHERE(v_price)>90;
+Empty set (0.00 sec)
+
+mysql> SELECT v_price , (v_price*0.22)
+    -> FROM cart
+    -> WHERE(v_price)>50;
+Empty set (0.00 sec)
+
+mysql> SELECT v_price ,(v_price*0.22/100)
+    -> FROM cart
+    -> WHERE v_price>50;
+Empty set (0.00 sec)
+
+mysql> SELECT v_price ,(v_price/100)
+    -> FROM cart
+    -> WHERE v_price>10;
++---------+---------------+
+| v_price | (v_price/100) |
++---------+---------------+
+| 40      |           0.4 |
+| 30      |           0.3 |
+| 45      |          0.45 |
+| 50      |           0.5 |
+| 25      |          0.25 |
+| 25      |          0.25 |
+| 29      |          0.29 |
++---------+---------------+
+7 rows in set (0.00 sec)
+
+mysql> SELECT v_price ,(v_price%100)
+    -> FROM cart
+    -> WHERE v_price>10;
++---------+---------------+
+| v_price | (v_price%100) |
++---------+---------------+
+| 40      |            40 |
+| 30      |            30 |
+| 45      |            45 |
+| 50      |            50 |
+| 25      |            25 |
+| 25      |            25 |
+| 29      |            29 |
++---------+---------------+
+7 rows in set (0.01 sec)
+
+mysql> SELECT v_price ,(v_price%100)
+    -> FROM cart
+    -> WHERE v_price>30;
++---------+---------------+
+| v_price | (v_price%100) |
++---------+---------------+
+| 40      |            40 |
+| 45      |            45 |
+| 50      |            50 |
++---------+---------------+
+3 rows in set (0.00 sec)
+
+mysql>

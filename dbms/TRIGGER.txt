@@ -1,0 +1,31 @@
+mysql> DELIMITER $$
+mysql> CREATE TRIGGER  T1 BEFORE INSERT ON vegge
+    -> FOR EACH ROW
+    -> BEGIN
+    -> IF NEW.v_price<15 THEN SET NEW.v_price=20;
+    -> END IF
+    -> ;
+    -> END;$$
+Query OK, 0 rows affected (0.67 sec)
+
+mysql> insert into vegge values(2,'B','f','a+',14);
+    -> $$
+Query OK, 1 row affected (0.16 sec)
+
+mysql> select * from vegge;
+    -> $$
++------+--------+--------+-------+---------+
+| v_id | v_name | v_type | v_des | v_price |
++------+--------+--------+-------+---------+
+|    1 | a      | f      | a+    |      15 |
+|    2 | B      | f      | a+    |      20 |
++------+--------+--------+-------+---------+
+2 rows in set (0.00 sec)
+
+mysql>
+
+
+
+
+
+
